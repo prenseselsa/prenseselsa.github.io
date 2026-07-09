@@ -270,6 +270,8 @@
 </head>
 <body>
 
+    <audio id="bgMusic" loop src="olurya.mp3"></audio>
+
     <div id="particles"></div>
 
     <div class="svg-container" id="svgContainer">
@@ -357,9 +359,13 @@
         const modal = document.getElementById('modal');
         const openBtn = document.getElementById('openBtn');
         const closeBtn = document.getElementById('closeBtn');
+        const bgMusic = document.getElementById('bgMusic');
 
         openBtn.addEventListener('click', () => {
             modal.classList.add('show');
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => console.log("Audio play failed:", e));
+            }
         });
 
         closeBtn.addEventListener('click', () => {
