@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tayfun'dan Damla'ya</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --neon-white: #ffffff;
+            --neon-cyan: #22d3ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--neon-white);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Particles */
+        #particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-up infinite linear;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% {
+                transform: translateY(-10vh);
+                opacity: 0;
+            }
+        }
+
+        /* SVG Container */
+        .svg-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            aspect-ratio: 3/4;
+            z-index: 10;
+            margin-bottom: 2rem;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: visible;
+        }
+
+        /* Tulip */
+        .tulip-path {
+            fill: none;
+            stroke: var(--neon-white);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 2s ease-in-out forwards;
+        }
+
+        /* Stethoscope */
+        .steth-path {
+            fill: none;
+            stroke: var(--neon-cyan);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8));
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            opacity: 0;
+        }
+        
+        .steth-circle {
+            fill: none;
+            stroke: var(--neon-cyan);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8));
+            stroke-dasharray: 150;
+            stroke-dashoffset: 150;
+            opacity: 0;
+        }
+
+        .steth-dot {
+            fill: var(--neon-cyan);
+            filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8));
+            opacity: 0;
+        }
+
+        .show-steth .steth-path {
+            animation: draw 2s ease-in-out forwards, fade-in 0.1s forwards;
+        }
+        .show-steth .steth-circle {
+            animation: draw-circle 1.5s ease-in-out forwards, fade-in 0.1s forwards;
+        }
+        .show-steth .steth-dot {
+            animation: fade-in 1s ease-in-out forwards;
+        }
+
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes draw-circle {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes fade-in {
+            to { opacity: 1; }
+        }
+
+        /* Text and Button */
+        .content {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+        }
+
+        .content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            letter-spacing: 0.1em;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        button {
+            background: rgba(8, 51, 68, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 211, 238, 0.5);
+            color: #cffafe;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        button:hover {
+            background: rgba(8, 51, 68, 0.5);
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 40px rgba(34, 211, 238, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: rgba(3, 3, 3, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(34, 211, 238, 0.2);
+            transform: scale(0.95) translateY(30px);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #f3f4f6;
+            font-weight: 300;
+            line-height: 1.6;
+            letter-spacing: 0.05em;
+            font-style: italic;
+            margin-bottom: 3rem;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: rgba(34, 211, 238, 0.8);
+            padding: 0.8rem 2rem;
+            box-shadow: none;
+        }
+
+        .close-btn:hover {
+            background: transparent;
+            color: rgba(34, 211, 238, 1);
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: none;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles"></div>
+
+    <div class="svg-container" id="svgContainer">
+        <!-- Tulip -->
+        <svg viewBox="0 0 300 400" id="tulipSvg">
+            <!-- Central stem and bud -->
+            <path class="tulip-path" style="animation-delay: 0s;" d="M150 350 C 145 280, 160 220, 150 160" />
+            <!-- Left leaf -->
+            <path class="tulip-path" style="animation-delay: 0.6s; stroke-width: 1.5;" d="M150 300 C 100 260, 60 200, 75 140 C 95 180, 125 220, 150 240" />
+            <!-- Right leaf -->
+            <path class="tulip-path" style="animation-delay: 0.9s; stroke-width: 1.5;" d="M150 270 C 190 230, 230 180, 215 120 C 195 160, 165 200, 150 215" />
+            <!-- Left petal -->
+            <path class="tulip-path" style="animation-delay: 1.5s; stroke-width: 2;" d="M150 160 C 110 150, 100 100, 120 60 C 135 90, 145 120, 150 135" />
+            <!-- Right petal -->
+            <path class="tulip-path" style="animation-delay: 1.7s; stroke-width: 2;" d="M150 160 C 190 150, 200 100, 180 60 C 165 90, 155 120, 150 135" />
+            <!-- Center petal -->
+            <path class="tulip-path" style="animation-delay: 1.9s; stroke-width: 2;" d="M130 95 C 140 60, 150 30, 150 30 C 150 30, 160 60, 170 95 C 155 120, 145 120, 130 95 Z" />
+        </svg>
+
+        <!-- Stethoscope -->
+        <svg viewBox="0 0 300 400" id="stethSvg">
+            <!-- Tube -->
+            <path class="steth-path" style="animation-delay: 0s;" d="M130 320 C 190 350, 210 280, 175 230 C 140 180, 100 250, 120 300" />
+            <path class="steth-path" style="animation-delay: 0.6s;" d="M120 300 C 140 350, 240 330, 220 220 C 210 160, 180 150, 180 110" />
+            <!-- Earpieces -->
+            <path class="steth-path" style="animation-delay: 1.2s;" d="M180 110 C 170 80, 155 60, 165 50" />
+            <path class="steth-path" style="animation-delay: 1.3s;" d="M180 110 C 190 80, 205 60, 195 50" />
+            <!-- Chestpiece -->
+            <circle class="steth-circle" style="animation-delay: 1.8s;" cx="130" cy="320" r="16" />
+            <circle class="steth-dot" style="animation-delay: 2.1s;" cx="130" cy="320" r="5" />
+        </svg>
+    </div>
+
+    <div class="content" id="contentBox">
+        <h1>Tayfun'dan Damla İçin...</h1>
+        <button id="openBtn">
+            Notu Okumak İster misin?
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <p class="modal-text">
+                "Gelecekte binlerce kalbe şifa olacaksın biliyorum, ama şimdiden ritmini değiştirdiğin tek bir kalp var... Tıp fakültesi yolunda da, hayatın her anında da her zaman seninle, senin yanındayım. İyi ki varsın geleceğin en güzel doktoru."
+            </p>
+            <button class="close-btn" id="closeBtn">Kapat</button>
+        </div>
+    </div>
+
+    <script>
+        // Create Particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 80; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random properties
+            const size = Math.random() * 2 + 1;
+            const x = Math.random() * 100;
+            const delay = Math.random() * -20;
+            const duration = Math.random() * 20 + 15;
+            const isCyan = Math.random() > 0.7;
+
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${x}%`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.backgroundColor = isCyan ? 'var(--neon-cyan)' : 'var(--neon-white)';
+            particle.style.boxShadow = `0 0 ${size * 2}px ${isCyan ? 'var(--neon-cyan)' : 'var(--neon-white)'}`;
+
+            particlesContainer.appendChild(particle);
+        }
+
+        // Animations Sequence
+        setTimeout(() => {
+            document.getElementById('svgContainer').classList.add('show-steth');
+        }, 3500); // Wait for tulip to draw
+
+        setTimeout(() => {
+            document.getElementById('contentBox').classList.add('show');
+        }, 6000); // Wait for stethoscope to draw
+
+        // Modal Logic
+        const modal = document.getElementById('modal');
+        const openBtn = document.getElementById('openBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('show');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
+
