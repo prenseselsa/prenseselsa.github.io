@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lale Mektubu App</title>
+    <title>Lale Mektubu </title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap');
 
@@ -78,7 +78,7 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        /* UYGULAMA EKRANI (TAM KODUN OLDUĞU ALAN) */
+        /* UYGULAMA EKRANI (ORİJİNAL KODUN OLDUĞU YER) */
         #appScreen {
             position: fixed;
             top: 0;
@@ -99,6 +99,44 @@
         #appScreen.active {
             opacity: 1;
             pointer-events: all;
+        }
+
+        /* SOL ÜST GERİ DÖNÜŞ BUTONU */
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            z-index: 60;
+            background: rgba(8, 51, 68, 0.4);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            color: var(--neon-cyan);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(8, 51, 68, 0.8);
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.5);
+            transform: scale(1.1);
+        }
+
+        .back-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--neon-cyan);
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* Orijinal CSS Kodların */
@@ -338,8 +376,15 @@
         <div class="app-label">Lale Mektubu</div>
     </div>
 
-    <!-- SENİN ORİJİNAL KODUNUN ÇALIŞTIĞI EKRAN -->
+    <!-- UYGULAMA EKRANI -->
     <div id="appScreen">
+        <!-- SOL ÜST GERİ DÖNÜŞ BUTONU -->
+        <button class="back-btn" onclick="closeApp()" title="Ana Ekrana Dön">
+            <svg viewBox="0 0 24 24">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+
         <div id="particles"></div>
 
         <div class="svg-container" id="svgContainer">
@@ -382,28 +427,60 @@
     </div>
 
     <script>
-        // Uygulamayı Açma Fonksiyonu
+        let timer1, timer2;
+
+        // Uygulamayı Açma
         function openApp() {
             document.getElementById('launcher').style.display = 'none';
             const appScreen = document.getElementById('appScreen');
             appScreen.classList.add('active');
 
-            // Parçacıkları Başlat
+            // Parçacıkları Oluştur
             createParticles();
 
-            // Çizim Sıralamasını Başlat
-            setTimeout(() => {
+            // Animasyon Zamanlamaları
+            timer1 = setTimeout(() => {
                 document.getElementById('svgContainer').classList.add('show-steth');
             }, 3500);
 
-            setTimeout(() => {
+            timer2 = setTimeout(() => {
                 document.getElementById('contentBox').classList.add('show');
             }, 6000);
+        }
+
+        // Ana Ekrana Geri Dönme (Çıkış)
+        function closeApp() {
+            const appScreen = document.getElementById('appScreen');
+            const bgMusic = document.getElementById('bgMusic');
+            const modal = document.getElementById('modal');
+
+            // Müziği Durdur
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+
+            // Modalı Kapat
+            modal.classList.remove('show');
+
+            // Zamanlayıcıları Temizle
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+
+            // Ekran Öğelerini Sıfırla
+            document.getElementById('svgContainer').classList.remove('show-steth');
+            document.getElementById('contentBox').classList.remove('show');
+            document.getElementById('particles').innerHTML = '';
+
+            // Ekranı Kapat ve İkonu Göster
+            appScreen.classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('launcher').style.display = 'flex';
+            }, 300);
         }
 
         // Particle Üretici
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
             for (let i = 0; i < 80; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
