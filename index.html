@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lale Mektubu App</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap');
 
         :root {
             --bg-color: #050505;
-            --card-bg: rgba(15, 23, 42, 0.65);
             --neon-white: #ffffff;
             --neon-cyan: #22d3ee;
-            --accent-pink: #f472b6;
-            --nav-bg: rgba(10, 10, 12, 0.85);
-            --border-glow: rgba(34, 211, 238, 0.3);
         }
 
         * {
@@ -25,20 +21,89 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: #020204;
             color: var(--neon-white);
             font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             overflow: hidden;
             position: relative;
         }
 
-        /* Ambient Background Grid */
-        #particles {
+        /* UYGULAMA İKONU ANA EKRANI */
+        #launcher {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #launcher:hover {
+            transform: scale(1.08);
+        }
+
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(8, 51, 68, 0.8), rgba(5, 5, 5, 0.9));
+            border: 1.5px solid rgba(34, 211, 238, 0.6);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.25);
+            backdrop-filter: blur(10px);
+            margin-bottom: 12px;
+        }
+
+        .app-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: var(--neon-cyan);
+            fill: none;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.8));
+        }
+
+        .app-label {
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            color: #e2e8f0;
+            font-weight: 400;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* UYGULAMA EKRANI (TAM KODUN OLDUĞU ALAN) */
+        #appScreen {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+            z-index: 10;
+        }
+
+        #appScreen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Orijinal CSS Kodların */
+        #particles {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -61,115 +126,16 @@
             100% { transform: translateY(-10vh); opacity: 0; }
         }
 
-        /* Main App Container Layout */
-        .app-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 900px;
-            height: 90vh;
-            background: rgba(8, 12, 20, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 28px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(34, 211, 238, 0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* App Header */
-        .app-header {
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(5, 5, 5, 0.3);
-        }
-
-        .brand {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #fff, var(--neon-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: #94a3b8;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--neon-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--neon-cyan);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
-        }
-
-        /* Viewport / Screen Area */
-        .app-content {
-            flex: 1;
-            position: relative;
-            overflow-y: auto;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Section View System */
-        .app-section {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.96);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .app-section.active {
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1);
-        }
-
-        /* SVG & Drawing Container */
         .svg-container {
             position: relative;
             width: 100%;
-            max-width: 280px;
+            max-width: 350px;
             aspect-ratio: 3/4;
-            margin-bottom: 1rem;
+            z-index: 10;
+            margin-bottom: 2rem;
         }
 
-        svg {
+        .svg-container svg {
             width: 100%;
             height: 100%;
             position: absolute;
@@ -184,10 +150,13 @@
             stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
-            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7));
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
             stroke-dasharray: 1000;
             stroke-dashoffset: 1000;
-            animation: draw 2.2s ease-in-out forwards;
+        }
+
+        #appScreen.active .tulip-path {
+            animation: draw 2s ease-in-out forwards;
         }
 
         .steth-path {
@@ -232,302 +201,253 @@
         @keyframes draw-circle { to { stroke-dashoffset: 0; } }
         @keyframes fade-in { to { opacity: 1; } }
 
-        /* Typography & Cards */
-        h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            letter-spacing: 0.08em;
-            text-align: center;
-            font-weight: 300;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-        }
-
-        .letter-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 2.5rem;
-            max-width: 650px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-        }
-
-        .letter-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            line-height: 1.8;
-            font-style: italic;
-            color: #e2e8f0;
-            font-weight: 300;
-        }
-
-        /* Navigation Bar */
-        .app-nav {
-            background: var(--nav-bg);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            justify-content: space-around;
-            padding: 0.8rem 1rem;
-            backdrop-filter: blur(15px);
-        }
-
-        .nav-item {
-            background: transparent;
-            border: none;
-            color: #64748b;
+        .content {
+            z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
-            font-family: 'Space Grotesk', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 8px 16px;
-            border-radius: 12px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out;
         }
 
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            transition: all 0.3s ease;
-            position: relative;
+        .content.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .nav-item.active {
-            color: var(--neon-cyan);
-            background: rgba(34, 211, 238, 0.08);
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            letter-spacing: 0.1em;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
         }
 
-        .nav-item:hover:not(.active) {
-            color: #cbd5e1;
-        }
-
-        /* Custom Buttons */
-        .action-btn {
-            background: rgba(8, 51, 68, 0.4);
+        button.main-btn {
+            background: rgba(8, 51, 68, 0.3);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(34, 211, 238, 0.5);
             color: #cffafe;
-            padding: 0.8rem 1.8rem;
+            padding: 1rem 2rem;
             border-radius: 50px;
             font-family: 'Space Grotesk', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            font-size: 0.9rem;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-            transition: all 0.4s ease;
-            margin-top: 1rem;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .action-btn:hover {
-            background: rgba(8, 51, 68, 0.8);
-            border-color: rgba(34, 211, 238, 0.9);
-            box-shadow: 0 0 30px rgba(34, 211, 238, 0.4);
-            transform: translateY(-2px);
+        button.main-btn:hover {
+            background: rgba(8, 51, 68, 0.5);
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 40px rgba(34, 211, 238, 0.4);
+            transform: scale(1.05);
         }
 
-        /* Custom Scrollbar */
-        .app-content::-webkit-scrollbar {
-            width: 6px;
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 1.5rem;
         }
-        .app-content::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: rgba(3, 3, 3, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(34, 211, 238, 0.2);
+            transform: scale(0.95) translateY(30px);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #f3f4f6;
+            font-weight: 300;
+            line-height: 1.6;
+            letter-spacing: 0.05em;
+            font-style: italic;
+            margin-bottom: 3rem;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: rgba(34, 211, 238, 0.8);
+            padding: 0.8rem 2rem;
+            box-shadow: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: rgba(34, 211, 238, 1);
+            border-color: rgba(34, 211, 238, 0.8);
         }
     </style>
 </head>
 <body>
 
-    <!-- Audio Element -->
+    <!-- Müzik -->
     <audio id="bgMusic" loop src="olurya.mp3"></audio>
 
-    <!-- Floating Particles -->
-    <div id="particles"></div>
+    <!-- UYGULAMA İKONU (AÇILIŞ EKRANI) -->
+    <div id="launcher" onclick="openApp()">
+        <div class="app-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+        <div class="app-label">Lale Mektubu</div>
+    </div>
 
-    <!-- Main Application UI Wrapper -->
-    <div class="app-container">
-        
-        <!-- Top App Bar -->
-        <header class="app-header">
-            <div class="brand">Lale Mektubu</div>
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span>Özel Not</span>
+    <!-- SENİN ORİJİNAL KODUNUN ÇALIŞTIĞI EKRAN -->
+    <div id="appScreen">
+        <div id="particles"></div>
+
+        <div class="svg-container" id="svgContainer">
+            <!-- Tulip -->
+            <svg viewBox="0 0 300 400" id="tulipSvg">
+                <path class="tulip-path" style="animation-delay: 0s;" d="M150 350 C 145 280, 160 220, 150 160" />
+                <path class="tulip-path" style="animation-delay: 0.6s; stroke-width: 1.5;" d="M150 300 C 100 260, 60 200, 75 140 C 95 180, 125 220, 150 240" />
+                <path class="tulip-path" style="animation-delay: 0.9s; stroke-width: 1.5;" d="M150 270 C 190 230, 230 180, 215 120 C 195 160, 165 200, 150 215" />
+                <path class="tulip-path" style="animation-delay: 1.5s; stroke-width: 2;" d="M150 160 C 110 150, 100 100, 120 60 C 135 90, 145 120, 150 135" />
+                <path class="tulip-path" style="animation-delay: 1.7s; stroke-width: 2;" d="M150 160 C 190 150, 200 100, 180 60 C 165 90, 155 120, 150 135" />
+                <path class="tulip-path" style="animation-delay: 1.9s; stroke-width: 2;" d="M130 95 C 140 60, 150 30, 150 30 C 150 30, 160 60, 170 95 C 155 120, 145 120, 130 95 Z" />
+            </svg>
+
+            <!-- Stethoscope -->
+            <svg viewBox="0 0 300 400" id="stethSvg">
+                <path class="steth-path" style="animation-delay: 0s;" d="M130 320 C 190 350, 210 280, 175 230 C 140 180, 100 250, 120 300" />
+                <path class="steth-path" style="animation-delay: 0.6s;" d="M120 300 C 140 350, 240 330, 220 220 C 210 160, 180 150, 180 110" />
+                <path class="steth-path" style="animation-delay: 1.2s;" d="M180 110 C 170 80, 155 60, 165 50" />
+                <path class="steth-path" style="animation-delay: 1.3s;" d="M180 110 C 190 80, 205 60, 195 50" />
+                <circle class="steth-circle" style="animation-delay: 1.8s;" cx="130" cy="320" r="16" />
+                <circle class="steth-dot" style="animation-delay: 2.1s;" cx="130" cy="320" r="5" />
+            </svg>
+        </div>
+
+        <div class="content" id="contentBox">
+            <h1>Tayfun'dan Damla İçin...</h1>
+            <button class="main-btn" id="openBtn">
+                Notu Okumak İster misin?
+            </button>
+        </div>
+
+        <div class="modal-overlay" id="modal">
+            <div class="modal-content">
+                <p class="modal-text">
+                    "Gelecekte binlerce kalbe şifa olacaksın biliyorum, ama şimdiden ritmini değiştirdiğin tek bir kalp var... Tıp fakültesi yolunda da, hayatın her anında da her zaman seninle, senin yanındayım. İyi ki varsın geleceğin en güzel doktoru."
+                </p>
+                <button class="close-btn" id="closeBtn">Kapat</button>
             </div>
-        </header>
-
-        <!-- Main Content Screens Container -->
-        <main class="app-content">
-
-            <!-- TAB 1: Visual Experience (Tulip + Stethoscope) -->
-            <section class="app-section active" id="sec-home">
-                <div class="svg-container" id="svgContainer">
-                    <!-- Tulip SVG -->
-                    <svg viewBox="0 0 300 400" id="tulipSvg">
-                        <path class="tulip-path" style="animation-delay: 0s;" d="M150 350 C 145 280, 160 220, 150 160" />
-                        <path class="tulip-path" style="animation-delay: 0.5s; stroke-width: 1.5;" d="M150 300 C 100 260, 60 200, 75 140 C 95 180, 125 220, 150 240" />
-                        <path class="tulip-path" style="animation-delay: 0.8s; stroke-width: 1.5;" d="M150 270 C 190 230, 230 180, 215 120 C 195 160, 165 200, 150 215" />
-                        <path class="tulip-path" style="animation-delay: 1.2s; stroke-width: 2;" d="M150 160 C 110 150, 100 100, 120 60 C 135 90, 145 120, 150 135" />
-                        <path class="tulip-path" style="animation-delay: 1.4s; stroke-width: 2;" d="M150 160 C 190 150, 200 100, 180 60 C 165 90, 155 120, 150 135" />
-                        <path class="tulip-path" style="animation-delay: 1.6s; stroke-width: 2;" d="M130 95 C 140 60, 150 30, 150 30 C 150 30, 160 60, 170 95 C 155 120, 145 120, 130 95 Z" />
-                    </svg>
-
-                    <!-- Stethoscope SVG -->
-                    <svg viewBox="0 0 300 400" id="stethSvg">
-                        <path class="steth-path" style="animation-delay: 0s;" d="M130 320 C 190 350, 210 280, 175 230 C 140 180, 100 250, 120 300" />
-                        <path class="steth-path" style="animation-delay: 0.5s;" d="M120 300 C 140 350, 240 330, 220 220 C 210 160, 180 150, 180 110" />
-                        <path class="steth-path" style="animation-delay: 1s;" d="M180 110 C 170 80, 155 60, 165 50" />
-                        <path class="steth-path" style="animation-delay: 1.1s;" d="M180 110 C 190 80, 205 60, 195 50" />
-                        <circle class="steth-circle" style="animation-delay: 1.5s;" cx="130" cy="320" r="16" />
-                        <circle class="steth-dot" style="animation-delay: 1.8s;" cx="130" cy="320" r="5" />
-                    </svg>
-                </div>
-                <h1>Tayfun'dan Damla İçin...</h1>
-                <button class="action-btn" onclick="switchTab('sec-letter')">Mektubu Oku</button>
-            </section>
-
-            <!-- TAB 2: Letter View -->
-            <section class="app-section" id="sec-letter">
-                <div class="letter-card">
-                    <p class="letter-text">
-                        "Gelecekte binlerce kalbe şifa olacaksın biliyorum, ama şimdiden ritmini değiştirdiğin tek bir kalp var... Tıp fakültesi yolunda da, hayatın her anında da her zaman seninle, senin yanındayım. İyi ki varsın geleceğin en güzel doktoru."
-                    </p>
-                </div>
-            </section>
-
-            <!-- TAB 3: Placeholder for Future Features -->
-            <section class="app-section" id="sec-extra">
-                <div class="letter-card" style="border-color: rgba(244, 114, 182, 0.3);">
-                    <h1 style="font-size: 2rem; color: var(--accent-pink);">Bize Özel Alan</h1>
-                    <p style="color: #94a3b8; margin-top: 0.5rem; font-size: 0.95rem;">
-                        Burası gelecekte eklemek isteyeceğin yeni modüller için hazırlandı! (Fotoğraf galerisi, ortak anılar veya özel geri sayım modülü ekleyebiliriz).
-                    </p>
-                </div>
-            </section>
-
-            <!-- TAB 4: Music & Controls -->
-            <section class="app-section" id="sec-settings">
-                <div class="letter-card">
-                    <h1>Müzik Çalar</h1>
-                    <p style="color: #94a3b8; margin-bottom: 1.5rem;" id="musicStatus">Şarkı Durumu: Durduruldu</p>
-                    <button class="action-btn" id="musicToggleBtn" onclick="toggleAudio()">Müziği Başlat</button>
-                </div>
-            </section>
-
-        </main>
-
-        <!-- Bottom Navigation Bar -->
-        <nav class="app-nav">
-            <button class="nav-item active" onclick="switchTab('sec-home')">
-                <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                <span>Görsel</span>
-            </button>
-            <button class="nav-item" onclick="switchTab('sec-letter')">
-                <svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span>Mektup</span>
-            </button>
-            <button class="nav-item" onclick="switchTab('sec-extra')">
-                <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                <span>Özel</span>
-            </button>
-            <button class="nav-item" onclick="switchTab('sec-settings')">
-                <svg viewBox="0 0 24 24"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
-                <span>Müzik</span>
-            </button>
-        </nav>
-
+        </div>
     </div>
 
     <script>
-        // Particle Engine
-        const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 60; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            const size = Math.random() * 2 + 1;
-            const x = Math.random() * 100;
-            const delay = Math.random() * -20;
-            const duration = Math.random() * 20 + 15;
-            const isCyan = Math.random() > 0.6;
+        // Uygulamayı Açma Fonksiyonu
+        function openApp() {
+            document.getElementById('launcher').style.display = 'none';
+            const appScreen = document.getElementById('appScreen');
+            appScreen.classList.add('active');
 
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${x}%`;
-            particle.style.animationDelay = `${delay}s`;
-            particle.style.animationDuration = `${duration}s`;
-            particle.style.backgroundColor = isCyan ? 'var(--neon-cyan)' : 'var(--neon-white)';
-            particle.style.boxShadow = `0 0 ${size * 2}px ${isCyan ? 'var(--neon-cyan)' : 'var(--neon-white)'}`;
+            // Parçacıkları Başlat
+            createParticles();
 
-            particlesContainer.appendChild(particle);
+            // Çizim Sıralamasını Başlat
+            setTimeout(() => {
+                document.getElementById('svgContainer').classList.add('show-steth');
+            }, 3500);
+
+            setTimeout(() => {
+                document.getElementById('contentBox').classList.add('show');
+            }, 6000);
         }
 
-        // SVG Sequential Animation
-        setTimeout(() => {
-            document.getElementById('svgContainer').classList.add('show-steth');
-        }, 3000);
+        // Particle Üretici
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 2 + 1;
+                const x = Math.random() * 100;
+                const delay = Math.random() * -20;
+                const duration = Math.random() * 20 + 15;
+                const isCyan = Math.random() > 0.7;
 
-        // Tab Navigation Logic
-        function switchTab(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
-            // Remove active status from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${x}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.backgroundColor = isCyan ? 'var(--neon-cyan)' : 'var(--neon-white)';
+                particle.style.boxShadow = `0 0 ${size * 2}px ${isCyan ? 'var(--neon-cyan)' : 'var(--neon-white)'}`;
 
-            // Show selected section
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) targetSection.classList.add('active');
-
-            // Set active state on clicking corresponding nav item
-            const indexMap = { 'sec-home': 0, 'sec-letter': 1, 'sec-extra': 2, 'sec-settings': 3 };
-            const navItems = document.querySelectorAll('.nav-item');
-            if (navItems[indexMap[sectionId]]) {
-                navItems[indexMap[sectionId]].classList.add('active');
-            }
-
-            // Auto-play music on letter view if not playing
-            if (sectionId === 'sec-letter') {
-                playAudio();
+                particlesContainer.appendChild(particle);
             }
         }
 
-        // Audio Management System
+        // Modal ve Müzik Logic
+        const modal = document.getElementById('modal');
+        const openBtn = document.getElementById('openBtn');
+        const closeBtn = document.getElementById('closeBtn');
         const bgMusic = document.getElementById('bgMusic');
-        const musicStatus = document.getElementById('musicStatus');
-        const musicToggleBtn = document.getElementById('musicToggleBtn');
 
-        function playAudio() {
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('show');
             if (bgMusic.paused) {
-                bgMusic.play().then(() => {
-                    updateMusicUI(true);
-                }).catch(e => console.log("Audio trigger blocked:", e));
+                bgMusic.play().catch(e => console.log("Audio play failed:", e));
             }
-        }
+        });
 
-        function toggleAudio() {
-            if (bgMusic.paused) {
-                bgMusic.play().then(() => updateMusicUI(true));
-            } else {
-                bgMusic.pause();
-                updateMusicUI(false);
-            }
-        }
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
 
-        function updateMusicUI(isPlaying) {
-            if (isPlaying) {
-                musicStatus.innerText = "Şarkı Durumu: Çalıyor (Olur Ya)";
-                musicToggleBtn.innerText = "Müziği Durdur";
-            } else {
-                musicStatus.innerText = "Şarkı Durumu: Durduruldu";
-                musicToggleBtn.innerText = "Müziği Başlat";
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
             }
-        }
+        });
     </script>
 </body>
 </html>
